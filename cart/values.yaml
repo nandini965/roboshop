@@ -1,3 +1,0 @@
-appName: cart
-appPort: 8080
-params: "prod.cart.redis_host prod.cart.catalogue_host prod.cart.catalogue_port"

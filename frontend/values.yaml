@@ -1,6 +1,0 @@
-appName: frontend
-service:
-  type: LoadBalancer
-
-params: ""
-appPort: 80
