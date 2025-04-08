@@ -126,8 +126,9 @@ services:
 networks:
   app-network:
     driver: bridge
-  volumes:
-  mongo-data:  # Persistent volume for MongoDB data
+
+volumes:
+   mongo-data:  # Persistent volume for MongoDB data
 
 
 #  passwords = [
