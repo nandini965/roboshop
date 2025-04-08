@@ -57,7 +57,7 @@ services:
     networks:
       - app-network
     ports:
-      - "8080:8080"  # Expose your user-service on port 8080
+      - "8080:80"  # Expose your user-service on port 8080
     volumes:
       - .:/app  # Mount current directory to the container (for development)
 
