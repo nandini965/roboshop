@@ -100,7 +100,7 @@ services:
   catalogue:
     build: ./catalogue
     ports:
-      - "8080:80"
+      - "8082:80"
     environment:
       - MONGO=true  # Ensure MongoDB is used
       - MONGO_URL=mongodb://mongo:27017/catalogue  # Pointing to MongoDB service
