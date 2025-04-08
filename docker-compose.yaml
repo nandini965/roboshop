@@ -29,7 +29,7 @@ services:
       catalogue:
         condition: service_healthy
 
-  mongodb:
+  mongo-db:
     image: mongo:latest
     restart: always
     ports:
@@ -54,7 +54,7 @@ services:
     networks:
       - app-network
     depends_on:
-      - backend
+      - mongo-db
 
   payment:
     build: ./payment
