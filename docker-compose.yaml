@@ -1,0 +1,137 @@
+version: "3.8"
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      - cart
+      - catalogue
+      - user
+      - payment
+      - shipping
+
+  cart:
+    build: ./cart
+    ports:
+      - "8080:80"
+    environment:
+      redisHost: redis
+      catalogueHost: catalogue
+    networks:
+      - app-network
+    depends_on:
+      redis:
+        condition: service_healthy
+      catalogue:
+        condition: service_healthy
+
+  mongodb:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"  # Expose Redis default port
+    networks:
+      - app-network
+
+  user:
+    build: ./user
+    ports:
+      - "8080:80"
+    environment:
+      mongoURL: mongodb://username:password@mongodb:27017/users?tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
+    networks:
+      - app-network
+    depends_on:
+      - backend
+
+  payment:
+    build: ./payment
+    ports:
+      - "8080:80"
+    environment:
+      AMQP_HOST: rabbitmq
+      AMQP_USER: guest
+      AMQP_PASS: guest
+    networks:
+      - app-network
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  shipping:
+    build: ./shipping
+    ports:
+      - "8080:80"
+    environment:
+      AMQP_HOST: mysql
+      AMQP_USER: guest
+      AMQP_PASS: guest
+    networks:
+      - app-network
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  rabbitmq:
+    image: rabbitmq:management
+    restart: always
+    environment:
+      AMQP_USER: guest
+      AMQP_PASS: guest
+    ports:
+      - "5672:5672"  # Default AMQP port
+      - "15672:15672"  # RabbitMQ management console
+    networks:
+      - app-network
+
+  catalogue:
+    build: ./catalogue
+    ports:
+      - "8080:80"
+    environment:
+      mongoURL: mongodb://username:password@mongodb:27017/catalogue?tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_USER: roboshop
+      MYSQL_PASSWORD: roboshop123456
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  app-network:
+    driver: bridge
+
+#  passwords = [
+#  { name = "dev.payment.amqp_pass", value = "roboshop123" },
+#  { name = "dev.shipping.db_pass", value = "RoboShop@1" },
+#  { name = "dev.docdb.db_user", value = "roboshop" },
+#  { name = "dev.docdb.db_pass", value = "roboshop123456" },
+#  { name = "dev.rds.db_user", value = "roboshop" },
+#  { name = "dev.rds.db_pass", value = "roboshop123456" },
+#  { name = "dev.rabbitmq.rabbitmq_appuser_password", value = "roboshop123" },
+#  { name = "dev.catalogue.mongo_url", value = "mongodb://roboshop:roboshop123456@dev-docdb.cluster-c7igi66ocofh.us-east-1.docdb.amazonaws.com:27017/catalogue?tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false" },
+#  { name = "dev.user.mongo_url", value = "mongodb://roboshop:roboshop123456@dev-docdb.cluster-c7igi66ocofh.us-east-1.docdb.amazonaws.com:27017/user?tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false" }
