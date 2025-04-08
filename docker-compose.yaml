@@ -110,7 +110,7 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: "your_root_password"
+      MYSQL_ROOT_PASSWORD: "roboshop123456"
       MYSQL_USER: "roboshop"
       MYSQL_PASSWORD: "roboshop123456"
     ports:
