@@ -6,8 +6,6 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*  # Clean up to reduce image size
 
-# Step 3: Set the working directory inside the container
-WORKDIR /app
 
 # Step 4: Copy the requirements file into the container
 COPY requirements.txt .
