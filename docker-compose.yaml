@@ -76,7 +76,7 @@ services:
   shipping:
     build: ./shipping
     ports:
-      - "8080:80"
+      - "8081:80"
     environment:
       AMQP_HOST: mysql
       AMQP_USER: guest
