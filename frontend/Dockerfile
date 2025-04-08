@@ -1,5 +1,5 @@
-FROM nginx:latest
-COPY . /usr/share/nginx/html
-COPY . ./
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+FROM          nginx
+COPY          docker-nginx.conf /etc/nginx/nginx.conf
+COPY          docker-roboshop.conf /etc/nginx/conf.d/default.conf
+RUN           rm -rf /usr/share/nginx/html/*
+COPY          ./ /usr/share/nginx/html/
