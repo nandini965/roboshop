@@ -102,7 +102,11 @@ services:
     ports:
       - "8080:80"
     environment:
-      mongoURL: "mongodb://username:password@mongodb:27017/catalogue?tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
+      - MONGO=true  # Ensure MongoDB is used
+      - MONGO_URL=mongodb://mongo:27017/catalogue  # Pointing to MongoDB service
+      - REDIS_HOST=redis  # Redis hostname (container name)
+      - DOCUMENTDB=true  # Disable DocumentDB in this case (can toggle based on your environment)
+      - NODE_ENV=production
     networks:
       - app-network
 
@@ -110,9 +114,9 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: "roboshop123456"
-      MYSQL_USER: "roboshop"
-      MYSQL_PASSWORD: "roboshop123456"
+      MYSQL_ROOT_PASSWORD: roboshop123456
+      MYSQL_USER: roboshop
+      MYSQL_PASSWORD: roboshop123456
     ports:
       - "3306:3306"
     networks:
