@@ -20,5 +20,5 @@ COPY . .
 CMD ["python", "payment.py"]
 
 # Optionally, expose a port if your app listens on one
-EXPOSE 5000
+EXPOSE 8080
 
