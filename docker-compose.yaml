@@ -12,7 +12,7 @@ services:
   cart:
     build: ./cart
     ports:
-      - "8080:80"
+      - "8080:8080"
     environment:
       redisHost: redis
       catalogueHost: catalogue
@@ -69,14 +69,14 @@ services:
     networks:
       - app-network
     ports:
-      - "8081:80"  # Expose your user-service on port 8080
+      - "8080:8080"  # Expose your user-service on port 8080
     volumes:
       - .:/app  # Mount current directory to the container (for development)
 
   payment:
     build: ./payment
     ports:
-      - "8082:80"
+      - "8080:8080"
     environment:
       AMQP_HOST: rabbitmq
       AMQP_USER: guest
@@ -88,7 +88,7 @@ services:
   shipping:
     build: ./shipping
     ports:
-      - "8083:80"
+      - "8080:8080"
     environment:
       AMQP_HOST: mysql
       AMQP_USER: guest
@@ -118,7 +118,7 @@ services:
       - DOCUMENTDB=true
       - NODE_ENV=production
     ports:
-      - "8080:80"
+      - "8080:8080"
     networks:
       - app-network
     healthcheck:
