@@ -42,6 +42,12 @@ services:
       - app-network
     ports:
       - "6379:6379"  # Expose Redis port
+    healthcheck:
+        test: [ "CMD", "redis-cli", "ping" ]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+
   user:
     build: ./user
     container_name: user
