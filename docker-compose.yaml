@@ -57,14 +57,14 @@ services:
     networks:
       - app-network
     ports:
-      - "8080:80"  # Expose your user-service on port 8080
+      - "8081:80"  # Expose your user-service on port 8080
     volumes:
       - .:/app  # Mount current directory to the container (for development)
 
   payment:
     build: ./payment
     ports:
-      - "8080:80"
+      - "8082:80"
     environment:
       AMQP_HOST: rabbitmq
       AMQP_USER: guest
@@ -76,7 +76,7 @@ services:
   shipping:
     build: ./shipping
     ports:
-      - "8081:80"
+      - "8083:80"
     environment:
       AMQP_HOST: mysql
       AMQP_USER: guest
