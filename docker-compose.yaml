@@ -99,16 +99,23 @@ services:
 
   catalogue:
     build: ./catalogue
+    environment:
+      - MONGO=true
+      - MONGO_URL=mongodb://mongo:27017/catalogue
+      - REDIS_HOST=redis
+      - DOCUMENTDB=true
+      - NODE_ENV=production
     ports:
       - "8082:80"
-    environment:
-      - MONGO=true  # Ensure MongoDB is used
-      - MONGO_URL=mongodb://mongo:27017/catalogue  # Pointing to MongoDB service
-      - REDIS_HOST=redis  # Redis hostname (container name)
-      - DOCUMENTDB=true  # Disable DocumentDB in this case (can toggle based on your environment)
-      - NODE_ENV=production
     networks:
       - app-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:80/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
 
   mysql:
     image: mysql:latest
