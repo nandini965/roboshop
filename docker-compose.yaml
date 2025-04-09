@@ -33,6 +33,12 @@ services:
       - "27017:27017"
     networks:
       - app-network
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 
   redis:
     image: redis:latest
@@ -120,7 +126,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 
   mysql:
