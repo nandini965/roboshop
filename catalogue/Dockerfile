@@ -2,7 +2,7 @@ FROM             node
 RUN              mkdir /app
 WORKDIR          /app
 COPY             server.js .
-COPY             . .
+COPY              . .
 RUN              npm install
-EXPOSE 8080
-CMD ["node", "server.js"]
+EXPOSE           8080
+CMD              ["node", "server.js"]
