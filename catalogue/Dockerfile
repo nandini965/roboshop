@@ -1,4 +1,5 @@
 FROM             node
+ENV INSTANA_AUTO_PROFILE true
 RUN              mkdir /app
 WORKDIR          /app
 COPY             server.js .

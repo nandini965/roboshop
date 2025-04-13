@@ -1,6 +1,6 @@
-version: "3.8"
+ version: "3.8"
 
-services:
+ services:
   frontend:
     build: ./frontend
     ports:
@@ -11,8 +11,6 @@ services:
 
   cart:
     build: ./cart
-    ports:
-      - "8080:8080"
     environment:
       redisHost: redis
       catalogueHost: catalogue
@@ -21,24 +19,16 @@ services:
     depends_on:
       redis:
         condition: service_healthy
-  #    catalogue:
-     #   condition: service_healthy
+      catalogue:
+        condition: service_healthy
 
+# Use root/example as user/password credentials
   mongo:
-    image: mongo:latest
+    image: mongo
     restart: always
-    volumes:
-      - mongo-data:/data/db
-    ports:
-      - "27017:27017"
-    networks:
-      - app-network
-    healthcheck:
-     test: [ "CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })" ]
-     interval: 10s
-     timeout: 5s
-     retries: 5
-
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: roboshop
+      MONGO_INITDB_ROOT_PASSWORD: roboshop123456
 
   redis:
     image: redis:latest
@@ -58,18 +48,14 @@ services:
     build: ./user
     container_name: user
     environment:
-      - MONGO=true  # Ensure MongoDB is used
-      - MONGO_URL=mongodb://mongo:27017/users  # Pointing to MongoDB service
-      - REDIS_HOST=redis  # Redis hostname (container name)
-      - DOCUMENTDB=false  # Disable DocumentDB in this case (can toggle based on your environment)
-      - NODE_ENV=production
+
     depends_on:
       - mongo
       - redis
     networks:
       - app-network
     ports:
-      - "8080:8080"  # Expose your user-service on port 8080
+      - "8080:80"  # Expose your user-service on port 8080
     volumes:
       - .:/app  # Mount current directory to the container (for development)
 
@@ -112,11 +98,11 @@ services:
   catalogue:
     build: ./catalogue
     environment:
-      - MONGO=true
-      - MONGO_URL=mongodb://mongo:27017/catalogue
-      - REDIS_HOST=redis
-      - DOCUMENTDB=true
-      - NODE_ENV=production
+      ME_CONFIG_MONGODB_ADMINUSERNAME: roboshop
+      ME_CONFIG_MONGODB_ADMINPASSWORD: roboshop123456
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/catalogue
+      ME_CONFIG_BASICAUTH: false
+
     ports:
       - "8080:8080"
     networks:
